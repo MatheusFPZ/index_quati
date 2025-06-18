@@ -1,8 +1,9 @@
 import pysolr
 import json
+import time
 
 # Configurações
-SOLR_URL = 'http://localhost:8983/solr/quati_core'  # Ajuste o nome do core, se necessário
+SOLR_URL = 'http://localhost:8983/solr/quati_core2'  # Ajuste o nome do core, se necessário
 JSON_FILE = 'quati_1M_passages.json'  # Arquivo JSON com documentos
 BATCH_SIZE = 1000  # Tamanho do lote
 
@@ -17,6 +18,7 @@ def carregar_json_em_lotes(caminho_arquivo, batch_size):
 
 def indexar_documentos():
     total = 0
+    start_time = time.time()  # ⏱️ Início da contagem
     for lote in carregar_json_em_lotes(JSON_FILE, BATCH_SIZE):
         # Ajuste os campos para garantir que passage_id e passage estão corretos
         for doc in lote:
@@ -38,5 +40,10 @@ def indexar_documentos():
     except Exception as e:
         print(f"Erro no commit final: {e}")
 
+    end_time = time.time()  # ⏱️ Fim da contagem
+    tempo_total = end_time - start_time
+    print(f"\n⏱️ Tempo total de indexação: {tempo_total:.2f} segundos")
+
 # Executar
+print("🔄 Iniciando indexação...")
 indexar_documentos()
